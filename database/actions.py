@@ -9,5 +9,10 @@ def save(model):
     return model
 
 
+def delete(model):
+    _session.delete(model)
+    _commit()
+
+
 def _commit():
     _session.commit()
