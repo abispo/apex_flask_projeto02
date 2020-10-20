@@ -1,5 +1,7 @@
 import uuid
 from sqlalchemy import func
+
+from app.domains.posts.models import Post
 from database import db
 from datetime import datetime
 
@@ -20,6 +22,9 @@ class User(db.Model):
         back_populates='user',
         uselist=False
     )
+    posts = db.relationship(
+        Post, back_populates='user'
+    )
 
     def serialize(self, detail=False):
         response = {
@@ -28,15 +33,19 @@ class User(db.Model):
             'created_at': self.created_at
         }
 
+        posts = []
+        if self.posts:
+            posts = [post.serialize() for post in self.posts]
+
         profile = None
         if self.profile:
             profile = self.profile.serialize()
 
         if detail:
             response.update({
-                'profile': profile
+                'profile': profile,
+                'posts': posts
             })
-
 
         return response
 

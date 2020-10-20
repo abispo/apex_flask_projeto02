@@ -1,11 +1,12 @@
 import json
 
-from flask import Flask, jsonify
+from flask import Flask
 from werkzeug.exceptions import HTTPException
 
 from database import db, migrate
 
 from app.domains.users.views import users_app
+from app.domains.posts.views import posts_app
 
 
 def create_app():
@@ -38,6 +39,6 @@ def _handle_default_exception(e):
     return response.data, code
 
 
-
 def _register_blueprints(app):
     app.register_blueprint(users_app, url_prefix='/users')
+    app.register_blueprint(posts_app, url_prefix='/posts')
