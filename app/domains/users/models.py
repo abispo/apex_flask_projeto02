@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy import func
 from database import db
+from datetime import datetime
 
 
 class User(db.Model):
@@ -14,10 +15,54 @@ class User(db.Model):
     created_at = db.Column(
         db.DateTime(timezone=True),
         server_default=func.now())
+    profile = db.relationship(
+        'Profile',
+        back_populates='user',
+        uselist=False
+    )
+
+    def serialize(self, detail=False):
+        response = {
+            'id': self.id,
+            'username': self.username,
+            'created_at': self.created_at
+        }
+
+        profile = None
+        if self.profile:
+            profile = self.profile.serialize()
+
+        if detail:
+            response.update({
+                'profile': profile
+            })
+
+
+        return response
+
+
+class Profile(db.Model):
+    __tablename__ = 'profiles'
+
+    id = db.Column(
+        db.String(36),
+        db.ForeignKey('users.id'),
+        primary_key=True
+    )
+    first_name = db.Column(db.String(20))
+    last_name = db.Column(db.String(40))
+    birth_date = db.Column(db.DateTime(timezone=True))
+
+    user = db.relationship(
+        'User',
+        back_populates='profile',
+        uselist=False
+    )
 
     def serialize(self):
         return {
             'id': self.id,
-            'username': self.username,
-            'created_at': self.created_at
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'birth_date': datetime.strftime(self.birth_date, '%Y-%m-%d')
         }

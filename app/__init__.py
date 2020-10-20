@@ -1,5 +1,8 @@
+import json
 
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.exceptions import HTTPException
+
 from database import db, migrate
 
 from app.domains.users.views import users_app
@@ -14,7 +17,26 @@ def create_app():
 
     _register_blueprints(app)
 
+    app.register_error_handler(
+        HTTPException, _handle_default_exception
+    )
+
     return app
+
+
+def _handle_default_exception(e):
+    response = e.get_response()
+    code = e.code
+    description = e.description
+
+    response.data = json.dumps({
+        'code': code,
+        'description': description
+    })
+
+    response.content_type = 'application/json'
+    return response.data, code
+
 
 
 def _register_blueprints(app):

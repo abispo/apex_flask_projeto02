@@ -21,7 +21,7 @@ logger = logging.getLogger('alembic.env')
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.domains.users.models import User
+from app.domains.users.models import User, Profile
 from flask import current_app
 
 config.set_main_option(
