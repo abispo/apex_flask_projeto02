@@ -140,3 +140,4 @@ cython_debug/
 # PyCharm
 .idea/
 
+uploads/

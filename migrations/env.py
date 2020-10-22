@@ -23,6 +23,8 @@ logger = logging.getLogger('alembic.env')
 # target_metadata = mymodel.Base.metadata
 from app.domains.users.models import User, Profile
 from app.domains.posts.models import Post
+from app.domains.categories.models import Category
+from app.domains.files.models import File
 from flask import current_app
 
 config.set_main_option(

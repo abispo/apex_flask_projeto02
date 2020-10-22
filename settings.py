@@ -13,3 +13,5 @@ SQLALCHEMY_DATABASE_URI = f'sqlite:///{database_file}'
 SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', True)
 HOST = os.getenv('HOST')
 PORT = os.getenv('PORT')
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads/')

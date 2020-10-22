@@ -5,6 +5,11 @@ from sqlalchemy import func
 from database import db
 
 
+posts_categories = db.Table('posts_categories',
+    db.Column('post_id', db.String(36), db.ForeignKey('posts.id')),
+    db.Column('category_id', db.String(36), db.ForeignKey('categories.id')))
+
+
 class Post(db.Model):
     __tablename__ = 'posts'
 
@@ -31,15 +36,28 @@ class Post(db.Model):
         'User', back_populates='posts', uselist=False
     )
 
-    def serialize(self):
+    categories = db.relationship(
+        'Category',
+        secondary=posts_categories)
+
+    def serialize(self, detail=False):
         author = "{} {}".format(
             self.user.profile.first_name,
             self.user.profile.last_name
         )
 
-        return {
+        response = {
             'id': self.id,
             'author': author,
             'title': self.title,
             'text': self.text
         }
+
+        if detail:
+            categories_list = [
+                category.serialize() for category in self.categories
+            ]
+
+            response.update({'categories': categories_list})
+
+        return response
